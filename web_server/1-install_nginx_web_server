@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
-# installing and config nginx
+# SetUp Process for Nginx on a server
 
-apt-get update
+apt-get -y update
 apt-get -y install nginx
-
-# adding an html page
+ufw enable
+ufw allow 'Nginx HTTP'
+ufw allow 'OpenSSH'
 echo "Holberton School" > /var/www/html/index.html
-
-# checking if service is running
-state=$(pgrep nginx)
-if [ -n "$state" ];
-then
-	sudo service nginx start
-else
-	sudo service nginx restart
-fi
+service nginx restart

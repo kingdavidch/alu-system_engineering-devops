@@ -1,37 +1,11 @@
 #!/usr/bin/env bash
-# installing and config nginx
+# Configure your Nginx server so that /redirect_me is redirecting to another page
 
-apt-get update
-apt-get -y install nginx
+sudo apt-get update
+sudo apt-get install -y nginx
 
-# adding a html page
-echo "Holberton School" > /var/www/html/index.html
+echo "Hello World!" | sudo tee /var/www/html/index.html
+new_route="server_name _;\n\trewrite ^\/redirect_me https://github.com/Ronnie5562 permanent;"
+sudo sed -i "s|server_name _;|$new_route|" /etc/nginx/sites-enabled/default
 
-CONFIG=\
-"server {
-	listen 80 default_server;
-  	listen [::]:80 default_server;
-
-        root /var/www/html;
-
-        index index.html index.htm index.nginx-debian.html;
-	server_name _;
-	rewrite ^/redirect_me(.*)$ http://www.google.com/ permanent;
-        location / {
-                try_files \$uri \$uri/ =404;
-	}
-}"
-
-echo -e "$CONFIG" > /etc/nginx/sites-enabled/default
-
-# checking if service is running
-state=$(pgrep nginx)
-if [ -n "$state" ];
-then
-	sudo service nginx restart
-	echo "resarting Nginx...."
-else
-	sudo service nginx start
-	echo "Ngix started.."
-fi
-echo "done"
+sudo service nginx restart
